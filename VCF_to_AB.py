@@ -13,7 +13,7 @@ parser.add_argument('--parent_file', '-p', dest = 'parent_file',
 parser.add_argument('--parentA', '-a', dest = 'parentA',
                     help='Specifies the parent that will be labelled parent A, needs to match the parent file')
 parser.add_argument('--chromPrefix', '-c', dest = 'chromPrefix', default = argparse.SUPPRESS,
-                    help='Specify what the prefix is for your chromosome, for example S1_1000, default is no prefix')                
+                    help='Specify what the prefix is for your chromosome in the SNP ID, for example if the SNPID is S1_1000 put S the script will replace S with chr, default is no prefix')                
 args = parser.parse_args()
 
 ##Reads in the parent file and then removes the last line if it is a blank
@@ -46,7 +46,7 @@ else:
 
 
 ##Import progeny data and then removes the last line if it is a blank
-with open(args.input_file, 'r') as lines:
+with open(args.input_file,'r') as lines:
     prog = [x.strip('\n') for x in lines.readlines()]
 
 prog_snpID = []
@@ -54,6 +54,8 @@ prog_key = {}
 for i in range(len(prog)):
     current = prog[i].strip().split('\t')
     if(len(current) > 1):
+        if(current[0][0:2] == "##"):
+            pass
         if(current[0] == "#CHROM"):
             prog_header = current
         else:
@@ -75,9 +77,9 @@ for snp in par_snpID:
     
     line = prog[prog_key.get(snp)].strip().split('\t')
     if(format("chromPrefix" in args)):
-        out=["chr"+snp.replace(args.chromPrefix,"").replace("_","-")]
+        out=["chr"+snp.replace('S',"").replace("_","-")]
     else:
-        out=["chr"+snp.replace("S","").replace("_","-")]
+        out=["chr"+snp.replace("_","-")]
     
     for gen in range(9,len(line)):
         if (line[gen] == './.'):
