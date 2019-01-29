@@ -29,5 +29,5 @@ This script was designed to work from the command line.
 
 
   
-###Output file
+### Output file
 The script will output a file that is properly formatted for use with genotype corrector (.map).
